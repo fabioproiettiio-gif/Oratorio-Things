@@ -1,0 +1,62 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+}
+
+table {
+    border-spacing: 10px;
+}
+
+td {
+    padding: 0;
+}
+
+label {
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+.flip-card {
+    width: 100px;
+    height: 100px;
+    perspective: 1000px;
+}
+
+.front, .back {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+.front {
+    background-color: #ffffff;
+}
+
+.back {
+    background-color: #ffeeba;
+    transform: rotateY(180deg);
+}
+
+.flip-card {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+input[type="checkbox"]:checked + .flip-card {
+    transform: rotateY(180deg);
+}
