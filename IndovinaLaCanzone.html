@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Indovina la Canzone Italiana</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#141E30,#243B55);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(10px);
+    padding:30px;
+    border-radius:20px;
+    width:95%;
+    max-width:500px;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+h1{
+    margin-top:0;
+    font-weight:700;
+}
+
+select,input,button{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+}
+
+select,input{
+    background:white;
+    color:#333;
+}
+
+button{
+    background:#00c6ff;
+    background:linear-gradient(90deg,#00c6ff,#0072ff);
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.timer-bar{
+    height:8px;
+    background:#444;
+    border-radius:5px;
+    overflow:hidden;
+    margin:10px 0;
+}
+
+.timer-fill{
+    height:100%;
+    width:100%;
+    background:linear-gradient(90deg,#ff512f,#dd2476);
+    transition:width 1s linear;
+}
+
+#result{
+    font-weight:600;
+    margin-top:10px;
+    min-height:24px;
+}
+
+iframe{
+    border-radius:12px;
+    margin-top:10px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎵 Indovina la Canzone</h1>
+
+    <select id="decade">
+        <option value="60">Anni 60</option>
+        <option value="70">Anni 70</option>
+        <option value="80">Anni 80</option>
+        <option value="90">Anni 90</option>
+        <option value="2000">Anni 2000</option>
+    </select>
+
+    <button onclick="startGame()">🎧 Nuova Canzone</button>
+
+    <div class="timer-bar">
+        <div class="timer-fill" id="timerFill"></div>
+    </div>
+
+    <input type="text" id="answer" placeholder="Scrivi il titolo della canzone">
+
+    <button onclick="checkAnswer()">Controlla</button>
+
+    <div id="result"></div>
+    <div id="score">Punteggio: 0</div>
+
+    <div id="player"></div>
+</div>
+
+<script>
+let score = 0;
+let currentAnswer = "";
+let timer;
+let timeLeft = 20;
+
+const songs = {
+    "60": [
+        {video:"1pVu8tX9m9E", answer:"Volare"},
+        {video:"Vx5c6n4g4rY", answer:"Una rotonda sul mare"}
+    ],
+    "70": [
+        {video:"UjHn6vV5c7M", answer:"Gianna"},
+        {video:"6jMHKb0Q8m8", answer:"Il cielo è sempre più blu"}
+    ],
+    "80": [
+        {video:"M2mC1k6Yl9M", answer:"Centro di gravità permanente"},
+        {video:"0K3Y8z3kY5k", answer:"Si può dare di più"}
+    ],
+    "90": [
+        {video:"u2mVq0F9G5M", answer:"Gli anni"},
+        {video:"0V6sW6n9d8E", answer:"Come mai"}
+    ],
+    "2000": [
+        {video:"TDgm6uDr8Yk", answer:"Con te partirò"},
+        {video:"bHhpKkB3qYg", answer:"Sere nere"}
+    ]
+};
+
+function startGame(){
+    clearInterval(timer);
+    timeLeft = 20;
+    updateTimerBar();
+
+    const decade = document.getElementById("decade").value;
+    const random = songs[decade][Math.floor(Math.random()*songs[decade].length)];
+    
+    currentAnswer = random.answer.toLowerCase();
+
+    document.getElementById("player").innerHTML =
+        `<iframe width="100%" height="200"
+        src="https://www.youtube.com/embed/${random.video}?autoplay=1"
+        allow="autoplay"></iframe>`;
+
+    document.getElementById("result").innerText="";
+    document.getElementById("answer").value="";
+
+    timer = setInterval(()=>{
+        timeLeft--;
+        updateTimerBar();
+        if(timeLeft<=0){
+            clearInterval(timer);
+            revealAnswer();
+        }
+    },1000);
+}
+
+function updateTimerBar(){
+    const percent = (timeLeft/20)*100;
+    document.getElementById("timerFill").style.width = percent+"%";
+}
+
+function checkAnswer(){
+    const userAnswer = document.getElementById("answer").value.toLowerCase().trim();
+    clearInterval(timer);
+
+    if(userAnswer === currentAnswer){
+        score++;
+        document.getElementById("result").innerText="✅ Corretto!";
+    } else {
+        revealAnswer();
+    }
+    document.getElementById("score").innerText="Punteggio: "+score;
+}
+
+function revealAnswer(){
+    document.getElementById("result").innerText="❌ Tempo scaduto! Era: "+currentAnswer;
+}
+</script>
+
+</body>
+</html>
